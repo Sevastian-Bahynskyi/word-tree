@@ -6,18 +6,23 @@ import ReactFlow, {
   MiniMap,
   useNodesState,
   useEdgesState,
+  Node,
+  Edge,
+  Connection,
 } from 'reactflow';
-import type { Node, Edge, Connection } from 'reactflow';
 import 'reactflow/dist/style.css';
 import dagre from 'dagre';
-import { FaPlus } from 'react-icons/fa';
+
+import AddNodeButton from './components/AddNodeButton';
+import AddNodeModal, { NodeStyle } from './components/AddNodeModal';
+import StyledNode from './components/StyledNode';
 
 const nodeWidth = 180;
 const nodeHeight = 80;
 
-const ACCENT = 'from-purple-500 via-blue-500 to-cyan-400';
+interface StyledData extends NodeStyle {}
 
-function getLayoutedElements(nodes: Node[], edges: Edge[]) {
+function getLayoutedElements(nodes: Node<StyledData>[], edges: Edge[]) {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({ rankdir: 'TB', nodesep: 40, ranksep: 100 });
@@ -41,48 +46,66 @@ function getLayoutedElements(nodes: Node[], edges: Edge[]) {
   });
 }
 
-const initialNodes: Node[] = [
+const initialNodes: Node<StyledData>[] = [
   {
     id: '1',
-    data: { label: 'Root' },
+    data: { text: 'Root', bold: false, italic: false, glow: false },
     position: { x: 0, y: 0 },
-    type: 'default',
+    type: 'styled',
     draggable: false,
   },
 ];
 const initialEdges: Edge[] = [];
 
+const emojis = [
+  { name: 'smile', path: '/src/assets/emoji/smile.svg' },
+  { name: 'rocket', path: '/src/assets/emoji/rocket.svg' },
+  { name: 'idea', path: '/src/assets/emoji/idea.svg' },
+  { name: 'cool', path: '/src/assets/emoji/cool.svg' },
+  { name: 'fire', path: '/src/assets/emoji/fire.svg' },
+];
+
 function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node<StyledData> | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  // Layout nodes on mount and whenever nodes/edges change
   useEffect(() => {
     setNodes((nds) => getLayoutedElements(nds, edges));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edges.length, nodes.length]);
 
-  const onConnect = useCallback((params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onConnect = useCallback(
+    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
 
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+  const onNodeClick = useCallback((_: React.MouseEvent, node: Node<StyledData>) => {
     setSelectedNode(node);
   }, []);
 
-  const handleAddNode = () => {
+  const handleAddClick = () => {
+    if (selectedNode) setModalOpen(true);
+  };
+
+  const handleCreateNode = (style: NodeStyle) => {
     if (!selectedNode) return;
     const newId = (nodes.length + 1).toString();
-    const newNode: Node = {
+    const newNode: Node<StyledData> = {
       id: newId,
-      data: { label: `Node ${newId}` },
+      data: style,
       position: { x: 0, y: 0 },
-      type: 'default',
+      type: 'styled',
       draggable: false,
     };
     setNodes((nds) => [...nds, newNode]);
     setEdges((eds) => [...eds, { id: `${selectedNode.id}-${newId}`, source: selectedNode.id, target: newId }]);
     setSelectedNode(null);
+    setModalOpen(false);
   };
+
+  const nodeTypes = { styled: StyledNode };
 
   return (
     <div className="w-full h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100 relative overflow-hidden">
@@ -103,21 +126,19 @@ function App() {
         zoomOnScroll={true}
         zoomOnPinch={true}
         zoomOnDoubleClick={true}
+        nodeTypes={nodeTypes}
       >
         <MiniMap />
         <Controls />
         <Background gap={16} />
       </ReactFlow>
-      <button
-        className={`fixed right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-br ${ACCENT} text-white rounded-full w-36 h-36 flex items-center justify-center text-7xl border-4 border-white/60 transition-all duration-300 z-50 backdrop-blur-md bg-opacity-80 animate-neon
-          hover:-rotate-6 hover:scale-110 active:scale-90 focus:outline-none focus:ring-8 focus:ring-purple-300/40 disabled:bg-gray-400`}
-        style={{ boxShadow: '0 0 30px rgba(139,92,246,0.6), 0 0 60px rgba(139,92,246,0.4)' }}
-        onClick={handleAddNode}
-        disabled={!selectedNode}
-        title={selectedNode ? 'Add node' : 'Select a node to add'}
-      >
-        <FaPlus className="drop-shadow-lg" />
-      </button>
+      <AddNodeButton onClick={handleAddClick} disabled={!selectedNode} />
+      <AddNodeModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateNode}
+        emojis={emojis}
+      />
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-400 text-xs opacity-80 select-none">Select a node to add a child</div>
     </div>
   );
