@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes neon {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.6), 0 0 20px rgba(139, 92, 246, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.8);
+  }
+}
+
+.animate-neon {
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes morph {
+  0% {
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+  }
+  25% {
+    border-radius: 55% 45% 60% 40% / 60% 35% 65% 40%;
+  }
+  50% {
+    border-radius: 45% 55% 40% 60% / 35% 60% 40% 65%;
+  }
+  75% {
+    border-radius: 60% 40% 55% 45% / 55% 40% 60% 45%;
+  }
+  100% {
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+  }
+}
+
+.button-glow {
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
+
+.animate-morph {
+  animation: morph 4s linear infinite;
+}
