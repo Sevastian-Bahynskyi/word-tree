@@ -85,7 +85,7 @@ function App() {
   };
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100 relative overflow-hidden">
+    <div className="w-full h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100 relative overflow-hidden">
       <header className="absolute top-0 left-0 w-full z-40 flex items-center justify-between px-10 py-6 bg-white/70 backdrop-blur-md shadow-md">
         <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500 drop-shadow-lg tracking-tight">Word Tree</h1>
         <span className="text-base text-gray-500 font-medium">by YourName</span>
@@ -99,7 +99,7 @@ function App() {
         onNodeClick={onNodeClick}
         fitView
         className="w-full h-full pt-24"
-        panOnDrag={false}
+        panOnDrag={true}
         zoomOnScroll={true}
         zoomOnPinch={true}
         zoomOnDoubleClick={true}
@@ -109,10 +109,9 @@ function App() {
         <Background gap={16} />
       </ReactFlow>
       <button
-        className={`fixed right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-br ${ACCENT} text-white rounded-full w-36 h-36 flex items-center justify-center text-7xl shadow-[0_0_60px_10px_rgba(139,92,246,0.5)] border-4 border-white/60 transition-all duration-200 z-50
-          hover:scale-110 hover:shadow-[0_0_80px_20px_rgba(139,92,246,0.7)] focus:outline-none focus:ring-8 focus:ring-purple-300/40 disabled:bg-gray-400
-          backdrop-blur-md bg-opacity-80`} 
-        style={{ boxShadow: '0 0 60px 10px rgba(139,92,246,0.4), 0 8px 32px 0 rgba(31, 38, 135, 0.10)' }}
+        className={`fixed right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-br ${ACCENT} text-white rounded-full w-36 h-36 flex items-center justify-center text-7xl border-4 border-white/60 transition-all duration-300 z-50 backdrop-blur-md bg-opacity-80 animate-neon
+          hover:-rotate-6 hover:scale-110 active:scale-90 focus:outline-none focus:ring-8 focus:ring-purple-300/40 disabled:bg-gray-400`}
+        style={{ boxShadow: '0 0 30px rgba(139,92,246,0.6), 0 0 60px rgba(139,92,246,0.4)' }}
         onClick={handleAddNode}
         disabled={!selectedNode}
         title={selectedNode ? 'Add node' : 'Select a node to add'}
