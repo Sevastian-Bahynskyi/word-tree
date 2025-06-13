@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import EmojiPicker, { type EmojiClickData, EmojiStyle } from 'emoji-picker-react';
+
 
 export interface NodeStyle {
   text: string;
@@ -12,15 +13,15 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSubmit: (style: NodeStyle) => void;
-  emojis: { name: string; path: string }[];
 }
 
-const AddNodeModal: React.FC<Props> = ({ open, onClose, onSubmit, emojis }) => {
+const AddNodeModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
   const [text, setText] = useState('');
   const [emoji, setEmoji] = useState<string | undefined>(undefined);
   const [bold, setBold] = useState(false);
   const [italic, setItalic] = useState(false);
   const [glow, setGlow] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   if (!open) return null;
 
@@ -32,6 +33,8 @@ const AddNodeModal: React.FC<Props> = ({ open, onClose, onSubmit, emojis }) => {
     setBold(false);
     setItalic(false);
     setGlow(false);
+    setPickerOpen(false);
+
   };
 
   return (
@@ -61,17 +64,24 @@ const AddNodeModal: React.FC<Props> = ({ open, onClose, onSubmit, emojis }) => {
         </div>
         <div>
           <p className="text-sm text-gray-500 mb-1">Emoji (optional)</p>
-          <div className="flex flex-wrap gap-2">
-            {emojis.map((e) => (
-              <button
-                key={e.name}
-                onClick={() => setEmoji(e.path)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${emoji === e.path ? 'border-purple-500' : 'border-transparent hover:border-gray-300'}`}
-              >
-                <img src={e.path} alt={e.name} className="w-5 h-5" />
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => setPickerOpen((p) => !p)}
+            className="px-2 py-1 rounded-md bg-purple-100 hover:bg-purple-200 text-sm"
+          >
+            {emoji || 'Choose emoji'}
+          </button>
+          {pickerOpen && (
+            <div className="mt-2">
+              <EmojiPicker
+                emojiStyle={EmojiStyle.NATIVE}
+                onEmojiClick={(data: EmojiClickData) => {
+                  setEmoji(data.emoji);
+                  setPickerOpen(false);
+                }}
+              />
+            </div>
+          )}
         </div>
         <div className="flex justify-end space-x-2 pt-2">
           <button onClick={onClose} className="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-sm">Cancel</button>

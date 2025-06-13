@@ -14,13 +14,15 @@ import 'reactflow/dist/style.css';
 import dagre from 'dagre';
 
 import AddNodeButton from './components/AddNodeButton';
-import AddNodeModal, { NodeStyle } from './components/AddNodeModal';
+
+import AddNodeModal, { type NodeStyle } from './components/AddNodeModal';
 import StyledNode from './components/StyledNode';
 
 const nodeWidth = 180;
 const nodeHeight = 80;
 
-interface StyledData extends NodeStyle {}
+type StyledData = NodeStyle;
+
 
 function getLayoutedElements(nodes: Node<StyledData>[], edges: Edge[]) {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -57,6 +59,7 @@ const initialNodes: Node<StyledData>[] = [
 ];
 const initialEdges: Edge[] = [];
 
+
 const emojis = [
   { name: 'smile', path: '/src/assets/emoji/smile.svg' },
   { name: 'rocket', path: '/src/assets/emoji/rocket.svg' },
@@ -64,6 +67,7 @@ const emojis = [
   { name: 'cool', path: '/src/assets/emoji/cool.svg' },
   { name: 'fire', path: '/src/assets/emoji/fire.svg' },
 ];
+
 
 function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -138,6 +142,7 @@ function App() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleCreateNode}
         emojis={emojis}
+
       />
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-400 text-xs opacity-80 select-none">Select a node to add a child</div>
     </div>

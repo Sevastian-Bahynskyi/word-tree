@@ -12,6 +12,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.21",
     "dagre": "^0.8.5",
+    "emoji-picker-react": "^4.12.2",
     "framer-motion": "^12.17.3",
     "postcss": "^8.5.5",
     "react": "^19.1.0",
