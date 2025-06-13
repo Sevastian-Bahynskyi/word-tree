@@ -11,6 +11,8 @@ import ReactFlow, {
   Connection,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import './index.css'
+
 import dagre from 'dagre';
 
 import AddNodeButton from './components/AddNodeButton';
@@ -111,6 +113,26 @@ function App() {
 
   const nodeTypes = { styled: StyledNode };
 
+  const onNodeMouseEnter = useCallback((_: unknown, node: Node) => {
+    setEdges((eds) =>
+      eds.map((e) =>
+        e.source === node.id || e.target === node.id
+          ? { ...e, animated: true, className: 'edge-animated' }
+          : e
+      )
+    );
+  }, []);
+
+  const onNodeMouseLeave = useCallback((_: unknown, node: Node) => {
+    setEdges((eds) =>
+      eds.map((e) =>
+        e.source === node.id || e.target === node.id
+          ? { ...e, animated: false, className: '' }
+          : e
+      )
+    );
+  }, []);
+
   return (
     <div className="w-full h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100 relative overflow-hidden">
       <header className="absolute top-0 left-0 w-full z-40 flex items-center justify-between px-10 py-6 bg-white/70 backdrop-blur-md shadow-md">
@@ -124,12 +146,14 @@ function App() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeClick={onNodeClick}
+        onNodeMouseEnter={onNodeMouseEnter}
+        onNodeMouseLeave={onNodeMouseLeave}
         fitView
         className="w-full h-full pt-24"
-        panOnDrag={true}
-        zoomOnScroll={true}
-        zoomOnPinch={true}
-        zoomOnDoubleClick={true}
+        panOnDrag
+        zoomOnScroll
+        zoomOnPinch
+        zoomOnDoubleClick
         nodeTypes={nodeTypes}
       >
         <MiniMap />

@@ -1,22 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@keyframes neon {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.6), 0 0 20px rgba(139, 92, 246, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.8);
-  }
+/* Custom CSS variables and styles */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
 }
 
-.animate-neon {
-  animation: neon 1.5s ease-in-out infinite alternate;
-}
-
+/* 1. Morphing animation */
 @keyframes morph {
-  0% {
+  0%,
+  100% {
     border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
   }
   25% {
@@ -28,15 +21,77 @@
   75% {
     border-radius: 60% 40% 55% 45% / 55% 40% 60% 45%;
   }
-  100% {
-    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+}
+
+/* Button base + morph on hover */
+.btn-morph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 8rem; /* w-32 */
+  height: 8rem; /* h-32 */
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+  color: white;
+  font-size: 3.75rem; /* text-6xl */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-morph:hover {
+  animation: morph 4s linear infinite;
+  transform: scale(1.1);
+}
+
+/* Edge dash animation */
+@keyframes dash-move {
+  to {
+    stroke-dashoffset: -16;
   }
 }
 
-.button-glow {
-  animation: neon 1.5s ease-in-out infinite alternate;
+.edge-animated {
+  stroke-dasharray: 4 4;
+  animation: dash-move 1s linear infinite;
 }
 
-.animate-morph {
-  animation: morph 4s linear infinite;
+.group:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom component styles */
+.custom-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom utility classes */
+.text-gradient {
+  background: linear-gradient(90deg, #2563eb 0%, #9333ea 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.glass-effect {
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
 }
