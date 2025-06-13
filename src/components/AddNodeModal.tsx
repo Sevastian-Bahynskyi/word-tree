@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import EmojiPicker, { type EmojiClickData, EmojiStyle } from 'emoji-picker-react';
+
 
 export interface NodeStyle {
   text: string;
@@ -34,6 +34,7 @@ const AddNodeModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
     setItalic(false);
     setGlow(false);
     setPickerOpen(false);
+
   };
 
   return (
