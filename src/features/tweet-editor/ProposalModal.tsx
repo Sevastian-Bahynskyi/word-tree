@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Y from 'yjs';
 import { useCollaboration } from '../../collaboration/useCollaboration';
 import { Modal } from '../../components/ui/Modal';
-import { IProposal, YWord, YProposal } from '../../types';
+import { IProposal, YWord } from '../../types';
 import { ProposalItem } from './ProposalItem';
 
 interface ProposalModalProps {
@@ -15,25 +15,29 @@ interface ProposalModalProps {
 export const ProposalModal: React.FC<ProposalModalProps> = ({ isOpen, onClose, wordIndex, originalWord }) => {
     const { doc } = useCollaboration();
     const [proposals, setProposals] = useState<IProposal[]>([]);
-    const [newProposalText, setNewProposalText] = useState('');    useEffect(() => {
+    const [newProposalText, setNewProposalText] = useState('');
+
+    useEffect(() => {
         if (!isOpen) return;
 
         const yWords = doc.getArray<YWord>('words');
         const yWord = yWords.get(wordIndex);
-        const yProposals = yWord.get('proposals') as Y.Array<YProposal>;
+        const yProposals = yWord.get('proposals') as Y.Array<Y.Map<string | number>>;
 
         const updateProposals = () => {
-            setProposals(yProposals.toJSON() as IProposal[]);
+            setProposals(yProposals.toJSON());
         };
 
         updateProposals();
         yProposals.observe(updateProposals);
 
         return () => yProposals.unobserve(updateProposals);
-    }, [doc, wordIndex, isOpen]);    const handleVote = (proposalIndex: number) => {
+    }, [doc, wordIndex, isOpen]);
+
+    const handleVote = (proposalIndex: number) => {
         doc.transact(() => {
             const yWord = doc.getArray<YWord>('words').get(wordIndex);
-            const yProposals = yWord.get('proposals') as Y.Array<YProposal>;
+            const yProposals = yWord.get('proposals') as Y.Array<Y.Map<string | number>>;
             const yProposal = yProposals.get(proposalIndex);
 
             const currentEnergy = yProposal.get('energy') as number;
@@ -51,7 +55,7 @@ export const ProposalModal: React.FC<ProposalModalProps> = ({ isOpen, onClose, w
                 }
             });
 
-            if (winningProposal !== null) {
+            if (winningProposal) {
                 yWord.set('current', winningProposal.text);
             }
         });
