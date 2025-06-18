@@ -3,38 +3,41 @@
 /* 1. Import all of Tailwind's v4 utilities */
 @import "tailwindcss";
 
+/* src/index.css */
+
+/* 1. Import all of Tailwind's v4 utilities */
+@import "tailwindcss";
+
 /* 2. Define your raw color variables for light and dark modes */
 @layer base {
   :root {
-    --color-primary: 249 250 251; /* gray-50 */
-    --color-secondary: 255 255 255; /* white */
-    --color-accent: 79 70 229; /* indigo-600 */
-    --color-accent-secondary: 239 68 68; /* red-500 */
-    --color-base: 31 41 55; /* gray-800 */
+    --color-primary: rgb(249 250 251); /* gray-50 */
+    --color-secondary: rgb(255 255 255); /* white */
+    --color-accent: rgb(79 70 229); /* indigo-600 */
+    --color-accent-secondary: rgb(14, 34, 185); /* red-500 */
+    --color-base: rgb(31 41 55); /* gray-800 */
   }
 
   .dark {
-    --color-primary: 17 24 39; /* gray-900 */
-    --color-secondary: 31 41 55; /* gray-800 */
-    --color-accent: 59 130 246; /* blue-500 */
-    --color-accent-secondary: 251 191 36; /* amber-400 */
-    --color-base: 229 231 235; /* gray-200 */
+    --color-primary: rgb(17 24 39); /* gray-900 */
+    --color-secondary: rgb(31 41 55); /* gray-800 */
+    --color-accent: rgb(59 130 246); /* blue-500 */
+    --color-accent-secondary: rgb(22, 206, 184); /* amber-400 */
+    --color-base: rgb(229 231 235); /* gray-200 */
   }
 
   /* 3. Your global styles still live here */
   body {
-    background-color: rgb(var(--color-primary));
-    color: rgb(var(--color-base));
+    background-color: var(--color-primary);
+    color: var(--color-base);
     /* ... other body styles ... */
   }
-  /* ... etc ... */
 }
 
-/* 4. THIS IS THE MISSING PIECE: Register your variables with Tailwind */
 @theme {
-  --color-primary: rgb(var(--color-primary) / <alpha-value>);
-  --color-secondary: rgb(var(--color-secondary) / <alpha-value>);
-  --color-accent: rgb(var(--color-accent) / <alpha-value>);
-  --color-accent-secondary: rgb(var(--color-accent-secondary) / <alpha-value>);
-  --color-base: rgb(var(--color-base) / <alpha-value>);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-base: var(--color-base);
 }

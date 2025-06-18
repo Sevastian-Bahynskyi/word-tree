@@ -142,12 +142,12 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                                     >
                                         {isTopSuggestion && (
                                             <motion.div
-                                                className="absolute top-2 right-2"
+                                                className="absolute top-1 right-1 z-10"
                                                 initial={{ scale: 0, rotate: -180 }}
                                                 animate={{ scale: 1, rotate: 0 }}
                                                 transition={{ type: "spring", stiffness: 400, delay: 0.2 }}
                                             >
-                                                <div className="bg-accent text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                <div className="bg-accent/45 text-white text-xs font-bold px-2 py-1 rounded-full">
                                                     TOP
                                                 </div>
                                             </motion.div>
@@ -198,7 +198,7 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                                                     whileTap={{ scale: 0.9 }}
                                                     onClick={() => onVote(sugg.id)}
                                                     className={clsx(
-                                                        "relative p-3 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary shadow-lg",
+                                                        "relative p-3 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary shadow-lg z-0",
                                                         {
                                                             'bg-accent text-white hover:bg-accent/90 focus:ring-accent shadow-accent/25': userHasVoted,
                                                             'bg-primary text-base hover:bg-primary/80 focus:ring-accent/50': !userHasVoted,
@@ -230,7 +230,7 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                             className=" text-center py-8 bg-primary/20 rounded-xl border-2 border-dashed border-primary/30"
                         >
                             <motion.div
-                                // animate={{ y: [0, -10, 0] }}
+                                animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                                 className='flex items-center justify-center mb-4'
                             >
