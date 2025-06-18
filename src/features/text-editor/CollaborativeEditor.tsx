@@ -3,21 +3,41 @@ import { TextDisplay } from './TextDisplay';
 import { SuggestionPanel } from './SuggestionPanel';
 import { useTextData } from './useTextData';
 import { useYjs } from '../../providers/YjsProvider';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.15,
+            duration: 0.6,
+            staggerChildren: 0.2,
         },
     },
 };
 
-const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } },
+const itemVariants: Variants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            type: 'spring',
+            stiffness: 120,
+            damping: 15,
+        },
+    },
+};
+
+const pulseVariants: Variants = {
+    pulse: {
+        scale: [1, 1.02, 1],
+        transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: [0.42, 0, 0.58, 1], // cubic-bezier equivalent of easeInOut
+        },
+    },
 };
 
 export const CollaborativeEditor = () => {
@@ -25,18 +45,33 @@ export const CollaborativeEditor = () => {
     const { words, addSuggestion, voteOnSuggestion } = useTextData();
     const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
 
-    // Update awareness state when a word is selected
     useEffect(() => {
         awareness.setLocalStateField('selectedWordIndex', selectedWordIndex);
     }, [selectedWordIndex, awareness]);
 
     if (!words.length) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-accent mx-auto"></div>
-                    <p className="mt-4 text-lg text-base/80">{!isSynced ? "Connecting to server..." : "Initializing document..."}</p>
-                </div>
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-primary via-primary to-secondary">
+                <motion.div
+                    className="text-center"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <motion.div
+                        className="w-16 h-16 border-4 border-accent/30 border-t-accent rounded-full mx-auto mb-6"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    />
+                    <motion.p
+                        className="text-lg text-base/70 font-medium"
+                        variants={pulseVariants}
+                        initial="pulse"
+                        animate="pulse"
+                    >
+                        {!isSynced ? 'Connecting to server...' : 'Initializing document...'}
+                    </motion.p>
+                </motion.div>
             </div>
         );
     }
@@ -52,40 +87,62 @@ export const CollaborativeEditor = () => {
     };
 
     const handleWordClick = (index: number) => {
-        setSelectedWordIndex(prevIndex => prevIndex === index ? null : index);
-    }
+        setSelectedWordIndex((prevIndex) => (prevIndex === index ? null : index));
+    };
 
     return (
-        <main className="min-h-screen p-4 sm:p-8 flex flex-col items-center antialiased">
-            <motion.div
-                className="w-full max-w-4xl mx-auto"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <motion.header variants={itemVariants} className="text-center mb-8 md:mb-12">
-                    <h1 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent-secondary">
-                        Word Weave
-                    </h1>
-                    <p className="text-base/80 mt-2">Modify the text by proposing and voting on word replacements.</p>
-                </motion.header>
+        <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-secondary">
+            <div className="container mx-auto px-4 py-8 max-w-5xl">
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-8"
+                >
+                    {/* Header */}
+                    <motion.header variants={itemVariants} className="text-center">
+                        <motion.h1
+                            className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-accent via-accent-secondary to-accent bg-clip-text text-transparent mb-4"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: 'spring', stiffness: 300 }}
+                        >
+                            Word Weave
+                        </motion.h1>
+                        <motion.p
+                            className="text-base/60 text-lg max-w-2xl mx-auto leading-relaxed"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            Collaborate in real-time by proposing and voting on word replacements
+                        </motion.p>
+                    </motion.header>
 
-                <motion.section variants={itemVariants}>
-                    <TextDisplay
-                        words={words}
-                        selectedWordIndex={selectedWordIndex}
-                        onWordClick={handleWordClick}
-                    />
-                </motion.section>
+                    {/* Text Display Section */}
+                    <motion.section variants={itemVariants} className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-accent-secondary/5 rounded-2xl blur-xl" />
+                        <div className="relative bg-secondary/80 backdrop-blur-sm rounded-2xl p-8 border border-primary/20 shadow-xl">
+                            <TextDisplay
+                                words={words}
+                                selectedWordIndex={selectedWordIndex}
+                                onWordClick={handleWordClick}
+                            />
+                        </div>
+                    </motion.section>
 
-                <motion.section variants={itemVariants}>
-                    <SuggestionPanel
-                        selectedWord={selectedWord}
-                        onAddSuggestion={handleAddSuggestion}
-                        onVote={handleVote}
-                    />
-                </motion.section>
-            </motion.div>
-        </main>
+                    {/* Suggestions Panel */}
+                    <motion.section variants={itemVariants} className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-accent-secondary/5 to-accent/5 rounded-2xl blur-xl" />
+                        <div className="relative">
+                            <SuggestionPanel
+                                selectedWord={selectedWord}
+                                onAddSuggestion={handleAddSuggestion}
+                                onVote={handleVote}
+                            />
+                        </div>
+                    </motion.section>
+                </motion.div>
+            </div>
+        </div>
     );
 };

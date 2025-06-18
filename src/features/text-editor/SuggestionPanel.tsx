@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Word } from './types';
-import { ThumbsUp, PlusCircle, MessageCircleDashed } from 'lucide-react';
+import { ThumbsUp, PlusCircle, MessageCircleDashed, Sparkles } from 'lucide-react';
 import { getOrCreateUserId } from '../../lib/userStorageUtil';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -11,129 +11,287 @@ interface Props {
     onVote: (suggestionId: string) => void;
 }
 
+const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.3,
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 }
+};
+
 export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props) => {
     const [newSuggestion, setNewSuggestion] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const userId = getOrCreateUserId();
 
     if (!selectedWord) {
         return (
             <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-8 flex flex-col items-center justify-center text-center h-64 bg-secondary rounded-lg border-2 border-dashed border-primary/20"
+                transition={{ duration: 0.4 }}
+                className="bg-secondary/60 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-xl p-8"
             >
-                <MessageCircleDashed size={48} className="text-base/30 mb-4" />
-                <h4 className="font-semibold text-lg text-base/80">Select a Word</h4>
-                <p className="text-base/60 max-w-xs mt-1">Click on any word in the sentence above to see or add suggestions.</p>
+                <div className="flex flex-col items-center justify-center text-center h-48">
+                    <motion.div
+                        animate={{
+                            rotate: [0, 10, -10, 0],
+                            scale: [1, 1.1, 1]
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="mb-6"
+                    >
+                        <MessageCircleDashed size={64} className="text-base/20" />
+                    </motion.div>
+                    <motion.h4
+                        className="font-bold text-xl text-base/70 mb-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Select a Word to Begin
+                    </motion.h4>
+                    <motion.p
+                        className="text-base/50 max-w-sm leading-relaxed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        Click on any word above to see existing suggestions or propose your own alternatives
+                    </motion.p>
+                </div>
             </motion.div>
         );
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (newSuggestion.trim()) {
+        if (newSuggestion.trim() && !isSubmitting) {
+            setIsSubmitting(true);
             onAddSuggestion(newSuggestion.trim());
             setNewSuggestion('');
+            setTimeout(() => setIsSubmitting(false), 300);
         }
     };
 
-    return (
-        <div className="mt-8 bg-secondary p-6 rounded-lg shadow-md border border-primary">
-            <h3 className="text-xl font-bold mb-4">
-                Suggestions for <span className="text-accent-secondary">"{selectedWord.text}"</span>
-            </h3>
+    const sortedSuggestions = selectedWord.suggestions
+        .sort((a, b) => b.votes - a.votes);
 
-            <ul className="space-y-3 mb-6 min-h-[5rem]">
-                <AnimatePresence>
-                    {selectedWord.suggestions.length > 0 ? (
-                        selectedWord.suggestions
-                            .sort((a, b) => b.votes - a.votes)
-                            .map((sugg) => {
+    return (
+        <motion.div
+            className="bg-secondary/60 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-xl p-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            {/* Header */}
+            <motion.div
+                className="flex items-center gap-3 mb-6"
+                variants={itemVariants}
+            >
+                <Sparkles className="text-accent" size={24} />
+                <h3 className="text-2xl font-bold">
+                    Suggestions for{' '}
+                    <span className="text-accent-secondary bg-accent-secondary/10 px-3 py-1 rounded-lg">
+                        "{selectedWord.text}"
+                    </span>
+                </h3>
+            </motion.div>
+
+            {/* Suggestions List */}
+            <motion.div
+                className="mb-8 min-h-[120px]"
+                variants={itemVariants}
+            >
+                <AnimatePresence mode="popLayout">
+                    {sortedSuggestions.length > 0 ? (
+                        <motion.ul className="space-y-3">
+                            {sortedSuggestions.map((sugg, index) => {
                                 const userHasVoted = sugg.votedBy.includes(userId);
                                 const isAuthor = sugg.authorId === userId;
+                                const isTopSuggestion = index === 0 && sugg.votes > 1;
+
                                 return (
                                     <motion.li
                                         layout
                                         key={sugg.id}
                                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
-                                        className="flex items-center justify-between bg-primary/50 p-3 rounded-md"
+                                        exit={{ opacity: 0, x: -20, scale: 0.95, transition: { duration: 0.2 } }}
+                                        whileHover={{ scale: 1.02 }}
+                                        className={clsx(
+                                            "relative overflow-hidden rounded-xl p-4 transition-all duration-200",
+                                            {
+                                                'bg-gradient-to-r from-accent/20 to-accent-secondary/20 border-2 border-accent/30': isTopSuggestion,
+                                                'bg-primary/30 hover:bg-primary/50': !isTopSuggestion
+                                            }
+                                        )}
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-medium">{sugg.text}</span>
-                                            {isAuthor && (
-                                                <span className="text-xs font-semibold bg-accent/20 text-accent px-2 py-0.5 rounded-full">
-                                                    You
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex items-center gap-1.5 text-sm font-bold text-accent">
-                                                <ThumbsUp size={14} />
-                                                <AnimatePresence mode="popLayout">
-                                                    <motion.span
-                                                        key={sugg.votes}
-                                                        initial={{ y: -10, opacity: 0 }}
-                                                        animate={{ y: 0, opacity: 1 }}
-                                                        exit={{ y: 10, opacity: 0 }}
-                                                        transition={{ duration: 0.2, type: 'spring', stiffness: 300, damping: 20 }}
-                                                    >
-                                                        {sugg.votes}
-                                                    </motion.span>
-                                                </AnimatePresence>
-                                            </div>
-                                            <motion.button
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                                onClick={() => onVote(sugg.id)}
-                                                className={clsx(
-                                                    "p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary",
-                                                    {
-                                                        'bg-accent text-white hover:bg-accent/90 focus:ring-accent': userHasVoted,
-                                                        'bg-primary text-base hover:bg-primary/80 focus:ring-accent/50': !userHasVoted,
-                                                    }
-                                                )}
-                                                aria-label={`Vote for suggestion ${sugg.text}`}
+                                        {isTopSuggestion && (
+                                            <motion.div
+                                                className="absolute top-2 right-2"
+                                                initial={{ scale: 0, rotate: -180 }}
+                                                animate={{ scale: 1, rotate: 0 }}
+                                                transition={{ type: "spring", stiffness: 400, delay: 0.2 }}
                                             >
-                                                <ThumbsUp size={16} />
-                                            </motion.button>
+                                                <div className="bg-accent text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                    TOP
+                                                </div>
+                                            </motion.div>
+                                        )}
+
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="font-semibold text-lg">{sugg.text}</span>
+                                                {isAuthor && (
+                                                    <motion.span
+                                                        className="text-xs font-bold bg-accent/20 text-accent px-2 py-1 rounded-full"
+                                                        initial={{ scale: 0 }}
+                                                        animate={{ scale: 1 }}
+                                                        transition={{ delay: 0.1 }}
+                                                    >
+                                                        You
+                                                    </motion.span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex items-center gap-4">
+                                                {/* Vote count */}
+                                                <motion.div
+                                                    className="flex items-center gap-2 text-accent font-bold"
+                                                    whileHover={{ scale: 1.1 }}
+                                                >
+                                                    <ThumbsUp size={16} />
+                                                    <AnimatePresence mode="popLayout">
+                                                        <motion.span
+                                                            key={sugg.votes}
+                                                            initial={{ y: -15, opacity: 0, scale: 0.8 }}
+                                                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                                                            exit={{ y: 15, opacity: 0, scale: 0.8 }}
+                                                            transition={{
+                                                                type: 'spring',
+                                                                stiffness: 400,
+                                                                damping: 20
+                                                            }}
+                                                        >
+                                                            {sugg.votes}
+                                                        </motion.span>
+                                                    </AnimatePresence>
+                                                </motion.div>
+
+                                                {/* Vote button */}
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() => onVote(sugg.id)}
+                                                    className={clsx(
+                                                        "relative p-3 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary shadow-lg",
+                                                        {
+                                                            'bg-accent text-white hover:bg-accent/90 focus:ring-accent shadow-accent/25': userHasVoted,
+                                                            'bg-primary text-base hover:bg-primary/80 focus:ring-accent/50': !userHasVoted,
+                                                        }
+                                                    )}
+                                                    aria-label={`Vote for suggestion ${sugg.text}`}
+                                                >
+                                                    <ThumbsUp size={18} />
+                                                    {userHasVoted && (
+                                                        <motion.div
+                                                            className="absolute inset-0 rounded-full bg-accent/20"
+                                                            initial={{ scale: 0 }}
+                                                            animate={{ scale: [1, 1.5, 0] }}
+                                                            transition={{ duration: 0.4 }}
+                                                        />
+                                                    )}
+                                                </motion.button>
+                                            </div>
                                         </div>
                                     </motion.li>
                                 );
-                            })
+                            })}
+                        </motion.ul>
                     ) : (
                         <motion.div
                             key="no-suggestions"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { delay: 0.2 } }}
-                            className="text-base/60 text-center py-4"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }}
+                            className="text-base/60 text-center py-8 bg-primary/20 rounded-xl border-2 border-dashed border-primary/30"
                         >
-                            No suggestions yet. Be the first!
+                            <motion.div
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="mb-3"
+                            >
+                                💡
+                            </motion.div>
+                            <p className="font-medium">No suggestions yet. Be the first to contribute!</p>
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </ul>
+            </motion.div>
 
-            <form onSubmit={handleSubmit} className="flex gap-3 mt-4">
-                <input
-                    type="text"
-                    value={newSuggestion}
-                    onChange={(e) => setNewSuggestion(e.target.value)}
-                    placeholder="Propose a replacement..."
-                    className="flex-grow bg-primary border border-primary/50 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent transition"
-                />
+            {/* Add Suggestion Form */}
+            <motion.form
+                onSubmit={handleSubmit}
+                className="space-y-4"
+                variants={itemVariants}
+            >
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={newSuggestion}
+                        onChange={(e) => setNewSuggestion(e.target.value)}
+                        placeholder="Propose your alternative..."
+                        className="w-full bg-primary/50 border-2 border-primary/30 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-all duration-200 placeholder-base/40"
+                        disabled={isSubmitting}
+                    />
+                    {newSuggestion.trim() && (
+                        <motion.div
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                        >
+                            <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
+                        </motion.div>
+                    )}
+                </div>
+
                 <motion.button
                     type="submit"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 bg-accent text-white font-bold px-4 py-2 rounded-md hover:bg-accent/90 transition-colors disabled:bg-base/20 disabled:cursor-not-allowed disabled:hover:bg-base/20"
-                    disabled={!newSuggestion.trim()}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    disabled={!newSuggestion.trim() || isSubmitting}
+                    className="w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-accent to-accent-secondary text-white font-bold px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                    <PlusCircle size={18} />
-                    Propose
+                    {isSubmitting ? (
+                        <>
+                            <motion.div
+                                className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            />
+                            Adding...
+                        </>
+                    ) : (
+                        <>
+                            <PlusCircle size={20} />
+                            Propose Alternative
+                        </>
+                    )}
                 </motion.button>
-            </form>
-        </div>
+            </motion.form>
+        </motion.div>
     );
 };
