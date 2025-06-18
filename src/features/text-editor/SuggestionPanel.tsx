@@ -230,11 +230,11 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                             className=" text-center py-8 bg-primary/20 rounded-xl border-2 border-dashed border-primary/30"
                         >
                             <motion.div
-                                animate={{ y: [0, -10, 0] }}
+                                // animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                                 className='flex items-center justify-center mb-4'
                             >
-                                <Lightbulb size={48} className=" mb-4" />
+                                <Lightbulb size={48} className="text-accent mb-4" />
                             </motion.div>
                             <p className="font-medium">No suggestions yet. Be the first to contribute!</p>
                         </motion.div>

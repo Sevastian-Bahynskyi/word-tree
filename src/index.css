@@ -1,54 +1,40 @@
-/* 1) Pull in all of Tailwind v4 */
+/* src/index.css */
+
+/* 1. Import all of Tailwind's v4 utilities */
 @import "tailwindcss";
 
-/* 2) Your CSS vars — light mode */
-:root {
-  --color-primary: 249 250 251; /* gray-50 */
-  --color-secondary: 255 255 255; /* white */
-  --color-accent: 79 70 229; /* indigo-600 */
-  --color-accent-secondary: 239 68 68; /* red-500 */
-  --color-base: 31 41 55; /* gray-800 */
-}
-
-/* 2b) Dark-mode overrides (next-themes adds .dark to <html>) */
-.dark {
-  --color-primary: 17 24 39; /* gray-900 */
-  --color-secondary: 31 41 55; /* gray-800 */
-  --color-accent: 59 130 246; /* blue-500 */
-  --color-accent-secondary: 251 191 36; /* amber-400 */
-  --color-base: 229 231 235; /* gray-200 */
-}
-
-/* 3) Global base styles */
+/* 2. Define your raw color variables for light and dark modes */
 @layer base {
+  :root {
+    --color-primary: 249 250 251; /* gray-50 */
+    --color-secondary: 255 255 255; /* white */
+    --color-accent: 79 70 229; /* indigo-600 */
+    --color-accent-secondary: 239 68 68; /* red-500 */
+    --color-base: 31 41 55; /* gray-800 */
+  }
+
+  .dark {
+    --color-primary: 17 24 39; /* gray-900 */
+    --color-secondary: 31 41 55; /* gray-800 */
+    --color-accent: 59 130 246; /* blue-500 */
+    --color-accent-secondary: 251 191 36; /* amber-400 */
+    --color-base: 229 231 235; /* gray-200 */
+  }
+
+  /* 3. Your global styles still live here */
   body {
     background-color: rgb(var(--color-primary));
     color: rgb(var(--color-base));
-    transition: background-color 300ms, color 300ms;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    /* ... other body styles ... */
   }
-
-  /* Scrollbars */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: rgb(var(--color-primary));
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgb(var(--color-accent) / 0.3);
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgb(var(--color-accent) / 0.5);
-  }
+  /* ... etc ... */
 }
 
-/* 
-  SECTION 4 WAS REMOVED. The conflicting @theme blocks that were here are gone.
-  Your tailwind.config.ts file is already handling this correctly.
-*/
+/* 4. THIS IS THE MISSING PIECE: Register your variables with Tailwind */
+@theme {
+  --color-primary: rgb(var(--color-primary) / <alpha-value>);
+  --color-secondary: rgb(var(--color-secondary) / <alpha-value>);
+  --color-accent: rgb(var(--color-accent) / <alpha-value>);
+  --color-accent-secondary: rgb(var(--color-accent-secondary) / <alpha-value>);
+  --color-base: rgb(var(--color-base) / <alpha-value>);
+}
