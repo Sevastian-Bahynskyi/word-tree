@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Word } from './types';
-import { ThumbsUp, PlusCircle, MessageCircleDashed, Sparkles } from 'lucide-react';
+import { ThumbsUp, PlusCircle, MessageCircleDashed, Sparkles, Lightbulb } from 'lucide-react';
 import { getOrCreateUserId } from '../../lib/userStorageUtil';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -57,7 +57,7 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                         <MessageCircleDashed size={64} className="text-base/20" />
                     </motion.div>
                     <motion.h4
-                        className="font-bold text-xl text-base/70 mb-2"
+                        className="font-bold text-xl mb-2"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
@@ -227,14 +227,14 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                             key="no-suggestions"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }}
-                            className="text-base/60 text-center py-8 bg-primary/20 rounded-xl border-2 border-dashed border-primary/30"
+                            className=" text-center py-8 bg-primary/20 rounded-xl border-2 border-dashed border-primary/30"
                         >
                             <motion.div
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 2, repeat: Infinity }}
-                                className="mb-3"
+                                className='flex items-center justify-center mb-4'
                             >
-                                💡
+                                <Lightbulb size={48} className="text-accent mb-4" />
                             </motion.div>
                             <p className="font-medium">No suggestions yet. Be the first to contribute!</p>
                         </motion.div>

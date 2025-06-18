@@ -4,6 +4,7 @@ import { ConnectionStatus } from './components/ConnectionStatus';
 import { ThemeProvider } from './providers/ThemeProvider';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 
+
 function App() {
   return (
     <ThemeProvider>
