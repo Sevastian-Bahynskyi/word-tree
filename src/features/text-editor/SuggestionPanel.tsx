@@ -234,7 +234,7 @@ export const SuggestionPanel = ({ selectedWord, onAddSuggestion, onVote }: Props
                                 transition={{ duration: 2, repeat: Infinity }}
                                 className='flex items-center justify-center mb-4'
                             >
-                                <Lightbulb size={48} className="text-accent mb-4" />
+                                <Lightbulb size={48} className=" mb-4" />
                             </motion.div>
                             <p className="font-medium">No suggestions yet. Be the first to contribute!</p>
                         </motion.div>

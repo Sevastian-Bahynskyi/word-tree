@@ -47,3 +47,8 @@
     background: rgb(var(--color-accent) / 0.5);
   }
 }
+
+/* 
+  SECTION 4 WAS REMOVED. The conflicting @theme blocks that were here are gone.
+  Your tailwind.config.ts file is already handling this correctly.
+*/
