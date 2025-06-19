@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TextDisplay } from './TextDisplay';
 import { SuggestionPanel } from './suggestion-panel/SuggestionPanel';
 import { useTextData } from './useTextData';
 import { useYjs } from '../../providers/YjsProvider';
 import { motion, type Variants } from 'framer-motion';
 import AnimatedText from '../../components/AnimatedText';
-
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -45,6 +44,7 @@ export const CollaborativeEditor = () => {
     const { isSynced, awareness } = useYjs();
     const { words, addSuggestion, voteOnSuggestion } = useTextData();
     const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
+    const suggestionPanelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         awareness.setLocalStateField('selectedWordIndex', selectedWordIndex);
@@ -85,10 +85,9 @@ export const CollaborativeEditor = () => {
 
     const handleVote = (suggestionId: string) => {
         if (selectedWordIndex !== null) voteOnSuggestion(selectedWordIndex, suggestionId);
-    };
-
-    const handleWordClick = (index: number) => {
-        setSelectedWordIndex((prevIndex) => (prevIndex === index ? null : index));
+    }; const handleWordClick = (index: number) => {
+        const newIndex = selectedWordIndex === index ? null : index;
+        setSelectedWordIndex(newIndex);
     };
 
     return (
@@ -128,12 +127,10 @@ export const CollaborativeEditor = () => {
                                 onWordClick={handleWordClick}
                             />
                         </div>
-                    </motion.section>
-
-                    {/* Suggestions Panel */}
+                    </motion.section>                    {/* Suggestions Panel */}
                     <motion.section variants={itemVariants} className="relative">
                         <div className="absolute inset-0 bg-gradient-to-r from-accent-secondary/5 to-accent/5 rounded-2xl blur-xl" />
-                        <div className="relative">
+                        <div className="relative" ref={suggestionPanelRef}>
                             <SuggestionPanel
                                 selectedWord={selectedWord}
                                 onAddSuggestion={handleAddSuggestion}
