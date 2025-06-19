@@ -4,6 +4,7 @@ import { SuggestionPanel } from './suggestion-panel/SuggestionPanel';
 import { useTextData } from './useTextData';
 import { useYjs } from '../../providers/YjsProvider';
 import { motion, type Variants } from 'framer-motion';
+import AnimatedText from '../../components/AnimatedText';
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -98,16 +99,15 @@ export const CollaborativeEditor = () => {
                     initial="hidden"
                     animate="visible"
                     className="space-y-8"
-                >
-                    {/* Header */}
+                >                    {/* Header */}
                     <motion.header variants={itemVariants} className="text-center">
-                        <motion.h1
-                            className="text-5xl sm:text-6xl font-bold bg-gradient-to-r from-accent via-accent-secondary to-accent bg-clip-text text-transparent mb-4"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                        >
-                            Word Weave
-                        </motion.h1>
+                        <div className="h-64 -mx-4 -mt-8 mb-4">
+                            <AnimatedText
+                                text="Word Tree"
+                                fontSize={80}
+                                letterSpacing={5}
+                            />
+                        </div>
                         <motion.p
                             className="text-base/60 text-lg max-w-2xl mx-auto leading-relaxed"
                             initial={{ opacity: 0 }}

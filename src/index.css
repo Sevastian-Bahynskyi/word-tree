@@ -1,29 +1,21 @@
-/* src/index.css */
-
-/* 1. Import all of Tailwind's v4 utilities */
-@import "tailwindcss";
-
-/* src/index.css */
-
-/* 1. Import all of Tailwind's v4 utilities */
 @import "tailwindcss";
 
 /* 2. Define your raw color variables for light and dark modes */
 @layer base {
   :root {
-    --color-primary: rgb(249 250 251); /* gray-50 */
-    --color-secondary: rgb(255 255 255); /* white */
-    --color-accent: rgb(79 70 229); /* indigo-600 */
-    --color-accent-secondary: rgb(14, 34, 185); /* red-500 */
-    --color-base: rgb(31 41 55); /* gray-800 */
+    --color-primary: rgb(240 250 235); /* soft leaf green background */
+    --color-secondary: rgb(255 255 245); /* light parchment white */
+    --color-accent: rgb(34 139 34); /* forest green */
+    --color-accent-secondary: rgb(160 82 45); /* sienna (bark brown) */
+    --color-base: rgb(44 62 30); /* dark moss green (for text) */
   }
 
   .dark {
-    --color-primary: rgb(17 24 39); /* gray-900 */
-    --color-secondary: rgb(31 41 55); /* gray-800 */
-    --color-accent: rgb(59 130 246); /* blue-500 */
-    --color-accent-secondary: rgb(22, 206, 184); /* amber-400 */
-    --color-base: rgb(229 231 235); /* gray-200 */
+    --color-primary: rgb(20 30 20); /* deep forest shadow */
+    --color-secondary: rgb(36 46 36); /* muted bark */
+    --color-accent: rgb(144 238 144); /* light green (spring leaf) */
+    --color-accent-secondary: rgb(222 184 135); /* burlywood (dried wood) */
+    --color-base: rgb(224 238 224); /* pale sage (for light-on-dark text) */
   }
 
   /* 3. Your global styles still live here */
