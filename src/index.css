@@ -11,19 +11,21 @@
 /* 2. Define your raw color variables for light and dark modes */
 @layer base {
   :root {
-    --color-primary: rgb(249 250 251); /* gray-50 */
-    --color-secondary: rgb(255 255 255); /* white */
-    --color-accent: rgb(79 70 229); /* indigo-600 */
-    --color-accent-secondary: rgb(14, 34, 185); /* red-500 */
-    --color-base: rgb(31 41 55); /* gray-800 */
+    /* Light mode: Nature-inspired warm earth tones */
+    --color-primary: rgb(252 251 247); /* warm off-white like parchment */
+    --color-secondary: rgb(255 254 250); /* pure warm white */
+    --color-accent: rgb(34 139 34); /* forest green */
+    --color-accent-secondary: rgb(139 69 19); /* saddle brown */
+    --color-base: rgb(46 46 46); /* dark charcoal */
   }
 
   .dark {
-    --color-primary: rgb(17 24 39); /* gray-900 */
-    --color-secondary: rgb(31 41 55); /* gray-800 */
-    --color-accent: rgb(59 130 246); /* blue-500 */
-    --color-accent-secondary: rgb(22, 206, 184); /* amber-400 */
-    --color-base: rgb(229 231 235); /* gray-200 */
+    /* Dark mode: Deep forest night colors */
+    --color-primary: rgb(22 27 34); /* deep forest night */
+    --color-secondary: rgb(30 39 46); /* darker forest floor */
+    --color-accent: rgb(144 238 144); /* light sage green */
+    --color-accent-secondary: rgb(222 184 135); /* warm burlywood */
+    --color-base: rgb(245 245 220); /* beige text */
   }
 
   /* 3. Your global styles still live here */

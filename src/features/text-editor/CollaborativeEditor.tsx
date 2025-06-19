@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TextDisplay } from './TextDisplay';
-import { SuggestionPanel } from './SuggestionPanel';
+import { SuggestionPanel } from './suggestion-panel/SuggestionPanel';
 import { useTextData } from './useTextData';
 import { useYjs } from '../../providers/YjsProvider';
 import { motion, type Variants } from 'framer-motion';
