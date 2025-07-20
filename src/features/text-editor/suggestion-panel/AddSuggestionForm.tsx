@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle } from 'lucide-react';
+import { useAddSuggestionForm } from './hooks/useAddSuggestionForm';
 
 interface Props {
     onAddSuggestion: (text: string) => void;
 }
 
 export const AddSuggestionForm = ({ onAddSuggestion }: Props) => {
-    const [newSuggestion, setNewSuggestion] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const {
+        newSuggestion,
+        setNewSuggestion,
+        isSubmitting,
+        submit,
+    } = useAddSuggestionForm(onAddSuggestion);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newSuggestion.trim() && !isSubmitting) {
-            setIsSubmitting(true);
-            onAddSuggestion(newSuggestion.trim());
-            setNewSuggestion('');
-            setTimeout(() => setIsSubmitting(false), 300);
-        }
+        submit();
     };
 
     return (

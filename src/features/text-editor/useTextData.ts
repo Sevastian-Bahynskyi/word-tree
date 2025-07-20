@@ -6,7 +6,7 @@ import { getOrCreateUserId } from '../../lib/userStorageUtil';
 
 const MOCK_TEXT = "React is a JavaScript library for building user interfaces.";
 
-const ySuggestionToSuggestion = (yMap: Y.Map<any>): Suggestion => ({
+const ySuggestionToSuggestion = (yMap: Y.Map<unknown>): Suggestion => ({
     id: yMap.get('id'),
     text: yMap.get('text'),
     votes: yMap.get('votes'),
@@ -14,7 +14,7 @@ const ySuggestionToSuggestion = (yMap: Y.Map<any>): Suggestion => ({
     votedBy: yMap.get('votedBy')?.toArray() ?? [],
 });
 
-const yWordToWord = (yMap: Y.Map<any>): Word => ({
+const yWordToWord = (yMap: Y.Map<unknown>): Word => ({
     id: yMap.get('id'),
     text: yMap.get('text'),
     suggestions: yMap.get('suggestions').toArray().map(ySuggestionToSuggestion),
@@ -24,7 +24,7 @@ export const useTextData = () => {
     const { doc, isSynced } = useYjs();
     const [words, setWords] = useState<Word[]>([]);
 
-    const yWords = useMemo(() => doc.getArray<Y.Map<any>>('text-words'), [doc]);
+    const yWords = useMemo(() => doc.getArray<Y.Map<unknown>>('text-words'), [doc]);
     const yMeta = useMemo(() => doc.getMap('text-meta'), [doc]);
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export const useTextData = () => {
         if (!wordMap) return;
 
         const authorId = getOrCreateUserId();
-        const suggestionsArray = wordMap.get('suggestions') as Y.Array<Y.Map<any>>;
+        const suggestionsArray = wordMap.get('suggestions') as Y.Array<Y.Map<unknown>>;
 
         // Prevent duplicate suggestions
         const existingSuggestion = suggestionsArray.toArray().some(s => s.get('text').toLowerCase() === suggestionText.toLowerCase());
@@ -94,7 +94,7 @@ export const useTextData = () => {
         const wordMap = yWords.get(wordIndex);
         if (!wordMap) return;
 
-        const suggestionsArray = wordMap.get('suggestions') as Y.Array<Y.Map<any>>;
+        const suggestionsArray = wordMap.get('suggestions') as Y.Array<Y.Map<unknown>>;
         const suggestionMap = suggestionsArray.toArray().find(s => s.get('id') === suggestionId);
         if (!suggestionMap) return;
 
