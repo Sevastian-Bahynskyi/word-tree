@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { TextDisplay } from './TextDisplay';
 import { SuggestionPanel } from './suggestion-panel/SuggestionPanel';
-import { useTextData } from './useTextData';
-import { useYjs } from '../../providers/YjsProvider';
+import { useEditorActions } from './hooks/useEditorActions';
 import { motion, type Variants } from 'framer-motion';
 import AnimatedText from '../../components/AnimatedText';
 const containerVariants: Variants = {
@@ -41,14 +40,16 @@ const pulseVariants: Variants = {
 };
 
 export const CollaborativeEditor = () => {
-    const { isSynced, awareness } = useYjs();
-    const { words, addSuggestion, voteOnSuggestion } = useTextData();
-    const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
+    const {
+        isSynced,
+        words,
+        selectedWord,
+        selectedWordIndex,
+        handleWordClick,
+        handleAddSuggestion,
+        handleVote,
+    } = useEditorActions();
     const suggestionPanelRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        awareness.setLocalStateField('selectedWordIndex', selectedWordIndex);
-    }, [selectedWordIndex, awareness]);
 
     if (!words.length) {
         return (
@@ -76,19 +77,6 @@ export const CollaborativeEditor = () => {
             </div>
         );
     }
-
-    const selectedWord = selectedWordIndex !== null ? words[selectedWordIndex] : undefined;
-
-    const handleAddSuggestion = (text: string) => {
-        if (selectedWordIndex !== null) addSuggestion(selectedWordIndex, text);
-    };
-
-    const handleVote = (suggestionId: string) => {
-        if (selectedWordIndex !== null) voteOnSuggestion(selectedWordIndex, suggestionId);
-    }; const handleWordClick = (index: number) => {
-        const newIndex = selectedWordIndex === index ? null : index;
-        setSelectedWordIndex(newIndex);
-    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary via-primary to-secondary">
