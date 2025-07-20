@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useYjs } from '../providers/YjsProvider';
+import { useYjs } from '../context/YjsProvider';
 import { Users } from 'lucide-react';
-import { getOrCreateUserId } from '../lib/userStorageUtil';
+import { getOrCreateUserId } from '../services/userStorage';
 
 export const ConnectionStatus = () => {
     const { awareness, isSynced } = useYjs();

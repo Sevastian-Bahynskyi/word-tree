@@ -1,6 +1,6 @@
 import { Word } from '../types';
 import { Sparkles, Lightbulb } from 'lucide-react';
-import { getOrCreateUserId } from '../../../lib/userStorageUtil';
+import { getOrCreateUserId } from '../../../services/userStorage';
 import { AnimatePresence, motion } from 'framer-motion';
 import { EmptyState } from './EmptyState';
 import { SuggestionItem } from './SuggestionItem';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useYjs } from '../../providers/YjsProvider';
-import { useTextData } from '../useTextData';
+import { useYjs } from '../../../context/YjsProvider';
+import { useTextData } from './useTextData';
 import { Word } from '../types';
 
 export interface UseEditorActionsConfig {

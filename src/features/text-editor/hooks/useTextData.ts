@@ -1,23 +1,25 @@
 import { useEffect, useState, useMemo } from 'react';
 import * as Y from 'yjs';
-import { useYjs } from '../../providers/YjsProvider';
-import { Word, Suggestion } from './types';
-import { getOrCreateUserId } from '../../lib/userStorageUtil';
+import { useYjs } from '../../../context/YjsProvider';
+import { Word, Suggestion } from '../types';
+import { getOrCreateUserId } from '../../../services/userStorage';
 
 const MOCK_TEXT = "React is a JavaScript library for building user interfaces.";
 
 const ySuggestionToSuggestion = (yMap: Y.Map<unknown>): Suggestion => ({
-    id: yMap.get('id'),
-    text: yMap.get('text'),
-    votes: yMap.get('votes'),
-    authorId: yMap.get('authorId'),
-    votedBy: yMap.get('votedBy')?.toArray() ?? [],
+    id: yMap.get('id') as string,
+    text: yMap.get('text') as string,
+    votes: yMap.get('votes') as number,
+    authorId: yMap.get('authorId') as string,
+    votedBy: (yMap.get('votedBy') as Y.Array<string> | undefined)?.toArray() ?? [],
 });
 
 const yWordToWord = (yMap: Y.Map<unknown>): Word => ({
-    id: yMap.get('id'),
-    text: yMap.get('text'),
-    suggestions: yMap.get('suggestions').toArray().map(ySuggestionToSuggestion),
+    id: yMap.get('id') as string,
+    text: yMap.get('text') as string,
+    suggestions: (yMap.get('suggestions') as Y.Array<Y.Map<unknown>>)
+        .toArray()
+        .map(ySuggestionToSuggestion),
 });
 
 export const useTextData = () => {
@@ -73,7 +75,9 @@ export const useTextData = () => {
         const suggestionsArray = wordMap.get('suggestions') as Y.Array<Y.Map<unknown>>;
 
         // Prevent duplicate suggestions
-        const existingSuggestion = suggestionsArray.toArray().some(s => s.get('text').toLowerCase() === suggestionText.toLowerCase());
+        const existingSuggestion = suggestionsArray
+            .toArray()
+            .some(s => (s.get('text') as string).toLowerCase() === suggestionText.toLowerCase());
         if (existingSuggestion) return;
 
         const suggestionMap = new Y.Map();

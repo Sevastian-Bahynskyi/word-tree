@@ -1,9 +1,9 @@
 // src/App.tsx
 
-import { YjsProvider } from './providers/YjsProvider';
+import { YjsProvider } from './context/YjsProvider';
 import { CollaborativeEditor } from './features/text-editor/CollaborativeEditor';
 import { ConnectionStatus } from './components/ConnectionStatus';
-import { ThemeProvider } from './providers/ThemeProvider';
+import { ThemeProvider } from './context/ThemeProvider';
 import { ThemeSwitcher } from './components/ThemeSwitcher';
 
 function App() {
